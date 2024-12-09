@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.koperasi.API.ApiConfig
 import com.example.koperasi.API.response.WorldResponse
-import com.example.koperasi.MainActivity
 import com.example.koperasi.R
 import com.example.koperasi.RegistActivity
 import com.example.koperasi.databinding.ActivityLoginBinding
@@ -19,6 +18,7 @@ import com.example.koperasi.preference.OperasiPreference
 import com.example.koperasi.preference.PreferenceViewModel
 import com.example.koperasi.preference.ViewModelFactory
 import com.example.koperasi.preference.dataStore
+import com.example.koperasi.user.UserActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,7 +54,6 @@ class LoginActivity : AppCompatActivity() {
                     if (idUser != null) {
                         preferenceViewModel.setID(idUser)
                     }
-
                 }
                 loginViewModel.nama.observe(this){nama->
                     if (nama != null) {
@@ -66,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                         preferenceViewModel.setRole(role)
                     }
                 }
-                val intentMain = Intent(this, MainActivity::class.java)
+                val intentMain = Intent(this, UserActivity::class.java)
                 startActivity(intentMain)
             }else{
                 loginViewModel.msg.observe(this){msg->

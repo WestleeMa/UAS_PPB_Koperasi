@@ -1,6 +1,7 @@
 package com.example.koperasi.API
 
 import com.example.koperasi.API.response.LoginResponse
+import com.example.koperasi.API.response.SimpanPinjamResponse
 import com.example.koperasi.API.response.WorldResponse
 import retrofit2.Call
 import retrofit2.http.Field
@@ -18,4 +19,11 @@ interface ApiService {
         @Field("email")email:String,
         @Field("password")password:String
     ):Call<LoginResponse>
+
+    @FormUrlEncoded
+    @POST("/simpanpinjam")
+    fun getSimpanPinjam(
+        @Field("idanggota")idanggota:String,
+        @Field("tbl")tbl:String
+    ):Call<SimpanPinjamResponse>
 }

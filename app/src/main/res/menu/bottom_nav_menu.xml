@@ -2,14 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
-        android:title="Home" />
-
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
     <item
         android:id="@+id/navigation_simpan"
         android:icon="@drawable/ic_send"
         android:title="Simpan" />
-
     <item
         android:id="@+id/navigation_pinjam"
         android:icon="@drawable/ic_handshake"
