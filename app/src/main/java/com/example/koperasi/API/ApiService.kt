@@ -22,9 +22,24 @@ interface ApiService {
     ):Call<LoginResponse>
 
     @FormUrlEncoded
+    @POST("/regist")
+    fun regist(
+        @Field("email")email:String,
+        @Field("password")password:String
+    ):Call<LoginResponse>
+
+    @FormUrlEncoded
     @POST("/simpanpinjam")
     fun getSimpanPinjam(
         @Field("idanggota")idanggota:String,
         @Field("tbl")tbl:String
     ):Call<SimpanPinjamResponse>
+
+    @FormUrlEncoded
+    @POST("/simpan")
+    fun simpanan(
+        @Field("idanggota")idanggota:String,
+        @Field("kategori")kategori:String,
+        @Field("jumlah") jumlah: String? = null
+    ):Call<String>
 }

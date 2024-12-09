@@ -1,4 +1,4 @@
-package com.example.koperasi
+package com.example.koperasi.register
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.koperasi.R
 import com.example.koperasi.databinding.ActivityRegistBinding
 import com.example.koperasi.login.LoginActivity
 

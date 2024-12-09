@@ -2,26 +2,20 @@ package com.example.koperasi.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import com.example.koperasi.API.ApiConfig
-import com.example.koperasi.API.response.WorldResponse
 import com.example.koperasi.R
-import com.example.koperasi.RegistActivity
+import com.example.koperasi.register.RegistActivity
 import com.example.koperasi.databinding.ActivityLoginBinding
 import com.example.koperasi.preference.OperasiPreference
 import com.example.koperasi.preference.PreferenceViewModel
 import com.example.koperasi.preference.ViewModelFactory
 import com.example.koperasi.preference.dataStore
 import com.example.koperasi.user.UserActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding:ActivityLoginBinding
