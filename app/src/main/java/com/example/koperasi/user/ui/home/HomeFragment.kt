@@ -7,23 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.koperasi.API.response.SimpanPinjamResponse
-import com.example.koperasi.API.response.SimpanPinjamResponseItem
-import com.example.koperasi.R
+import com.example.koperasi.API.response.ListItem
 import com.example.koperasi.databinding.FragmentHomeBinding
 import com.example.koperasi.preference.OperasiPreference
 import com.example.koperasi.preference.PreferenceViewModel
 import com.example.koperasi.preference.ViewModelFactory
 import com.example.koperasi.preference.dataStore
+import java.text.NumberFormat
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private lateinit var recyclerView: RecyclerView
-    private lateinit var cardAdapter: CardAdapter
+    private lateinit var cardAdapter: HomeCardAdapter
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -33,14 +32,6 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        recyclerView = root.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-
-        // Inisialisasi adapter dengan data kosong
-        cardAdapter = CardAdapter(emptyList())
-        recyclerView.adapter = cardAdapter
-
         return root
     }
 
@@ -56,39 +47,42 @@ class HomeFragment : Fragment() {
             binding.textHome.text = "Selamat Datang, $it"
         }
 
+        // Observasi ID anggota
         preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
-            homeViewModel.getSimpanPinjam(id, "simpan")
+            homeViewModel.getSimpanPinjam(id, "simpan") // Panggil API
         }
 
-        homeViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { response ->
-            if (response != null) {
-                Log.d("HomeFragment", "Data diterima: $response")
-                val cardData = response
-                cardAdapter.updateData(cardData)
-            } else {
-                Log.e("HomeFragment", "Data kosong atau null.")
+        homeViewModel.isError.observe(viewLifecycleOwner) { err ->
+            if (err){
+                homeViewModel.msg.observe(viewLifecycleOwner) { msg ->
+                    Log.e("HomeFragment", "Error: $msg")
+                }
+
+            }else{
+                homeViewModel.simpanan.observe(viewLifecycleOwner) { simpanan ->
+                    binding.textSimpanan.text = formatRupiah(simpanan.toInt())
+                }
+                homeViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
+                    if (list != null) {
+                        showRecyclerList(list)
+                        Log.d("HomeFragment", "Total Item: ${binding.recyclerView.adapter?.itemCount}")
+                    }
+                }
             }
         }
 
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.textNotif.visibility = View.VISIBLE
-                binding.textNotif.text = "Memuat data..."
-                recyclerView.visibility = View.GONE
-            } else {
-                binding.textNotif.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
-        }
-
-        homeViewModel.isError.observe(viewLifecycleOwner) { isError ->
-            if (isError) {
-                val errorMsg = homeViewModel.msg.value ?: "Terjadi kesalahan, coba lagi."
-                binding.textNotif.visibility = View.VISIBLE
-                binding.textNotif.text = errorMsg
-                recyclerView.visibility = View.GONE
-            }
-        }
+    }
+    private fun formatRupiah(number: Int): String {
+        val localeID = Locale("in", "ID") // Locale untuk Indonesia
+        val formatter = NumberFormat.getCurrencyInstance(localeID)
+        val formattedString = formatter.format(number).replace("Rp", "Rp.").replace(",00", "") // Format dan sesuaikan
+        return "$formattedString,-"
+    }
+    private fun showRecyclerList(list: List<ListItem>){
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val listFomUserAdapter = HomeCardAdapter()
+        listFomUserAdapter.submitList(list)
+        binding.recyclerView.adapter =listFomUserAdapter
     }
 
     override fun onDestroyView() {

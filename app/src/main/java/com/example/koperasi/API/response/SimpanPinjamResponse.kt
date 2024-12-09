@@ -4,11 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class SimpanPinjamResponse(
 
-	@field:SerializedName("SimpanPinjamResponse")
-	val simpanPinjamResponse: List<SimpanPinjamResponseItem?>? = null
+	@field:SerializedName("Total")
+	val total: Int? = null,
+
+	@field:SerializedName("List")
+	val list: List<ListItem?>? = null
 )
 
-data class SimpanPinjamResponseItem(
+data class ListItem(
 
 	@field:SerializedName("idanggota")
 	val idanggota: Int? = null,

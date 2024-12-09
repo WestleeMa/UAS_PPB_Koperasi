@@ -1,5 +1,6 @@
 package com.example.koperasi.API
 
+import com.example.koperasi.API.response.ListItem
 import com.example.koperasi.API.response.LoginResponse
 import com.example.koperasi.API.response.SimpanPinjamResponse
 import com.example.koperasi.API.response.WorldResponse

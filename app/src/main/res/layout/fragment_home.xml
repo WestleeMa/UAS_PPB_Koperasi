@@ -14,27 +14,53 @@
         android:layout_marginTop="50dp"
         android:textStyle="bold"
         android:text="dummy"
-        android:textSize="32sp"
+        android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         />
     <TextView
-        android:id="@+id/text_notif"
+        android:id="@+id/text_ket_simpan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp"
+        android:text="Total Simpanan Anda"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_home"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <TextView
+        android:id="@+id/text_simpanan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="50dp"
+        android:textStyle="bold"
+        android:text="Rp. 10.000.000,-"
+        android:textSize="28sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_ket_simpan"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+    <TextView
+        android:id="@+id/text_riwayat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp"
+        android:text="Riwayat simpanan"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/text_home"
+        app:layout_constraintTop_toBottomOf="@+id/text_simpanan"
         app:layout_constraintLeft_toLeftOf="parent"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_notif" />
+        app:layout_constraintTop_toBottomOf="@+id/text_riwayat" />
 </androidx.constraintlayout.widget.ConstraintLayout>
