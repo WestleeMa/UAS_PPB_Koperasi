@@ -1,12 +1,15 @@
 package com.example.koperasi.simpanwajib
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.koperasi.API.ApiConfig
+import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Call
 import retrofit2.Response
 
-class SetoranWajibViewModel {
+class SetoranWajibViewModel : ViewModel() {
     private val _msg = MutableLiveData<String>()
     val msg : MutableLiveData<String> = _msg
 
@@ -25,8 +28,13 @@ class SetoranWajibViewModel {
                     _isLoading.value = false
                     val responseBody = response.body()
                     if (responseBody != null) {
-
+                        Log.d("SetoranWajibViewModel", responseBody)
                     }
+                }else{
+                    if(_isError.value == null){
+                        _isError.value = true
+                    }
+                    _msg.value = (response.errorBody() as ResponseBody).string()
                 }
             }
 

@@ -14,13 +14,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.koperasi.R
 import com.example.koperasi.databinding.ActivityLoginBinding
 import com.example.koperasi.databinding.ActivitySetoranWajibBinding
+import com.example.koperasi.login.LoginViewModel
+import com.example.koperasi.preference.OperasiPreference
+import com.example.koperasi.preference.PreferenceViewModel
+import com.example.koperasi.preference.ViewModelFactory
+import com.example.koperasi.preference.dataStore
 import com.example.koperasi.user.UserActivity
 
 class SetoranWajibActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySetoranWajibBinding
+    private lateinit var setoranWajibViewModel: SetoranWajibViewModel
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -45,9 +54,14 @@ class SetoranWajibActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        setoranWajibViewModel = ViewModelProvider(this)[SetoranWajibViewModel::class.java]
         val intentMain = Intent(this, UserActivity::class.java)
+        val pref = OperasiPreference.getInstance(application.dataStore)
+        val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
         binding.btnSetuju.setOnClickListener {
-
+            preferenceViewModel.getID().observe(this) { id ->
+                setoranWajibViewModel.bayarWajib(id)
+            }
             sendNotification("Terima Kasih", "Berhasil membayar setoran wajib sebanyak Rp. 25.000,-")
             startActivity(intentMain)
         }
