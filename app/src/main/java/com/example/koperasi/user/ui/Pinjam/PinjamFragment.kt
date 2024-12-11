@@ -23,8 +23,10 @@ import java.util.Locale
 
 class PinjamFragment : Fragment() {
     private var _binding: FragmentPinjamBinding? = null
-
     private val binding get() = _binding!!
+
+    private lateinit var pinjamViewModel: PinjamViewModel
+    private lateinit var pinjamCardAdapter: PinjamCardAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,58 +43,71 @@ class PinjamFragment : Fragment() {
 
         val pref = OperasiPreference.getInstance(requireContext().dataStore)
         val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
-        val pinjamViewModel = ViewModelProvider(this).get(PinjamViewModel::class.java)
+        pinjamViewModel = ViewModelProvider(this).get(PinjamViewModel::class.java)
 
+        // Initialize adapter
+        pinjamCardAdapter = PinjamCardAdapter { id ->
+            Log.d("PinjamFragment", "ID yang diklik: $id")
+        }
+
+        // Set adapter to RecyclerView
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = pinjamCardAdapter
+
+        // Handle preference ID and get data
         preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
-            if (id != null) {
+            id?.let {
                 pinjamViewModel.getSimpanPinjam(id, "pinjam")
             }
         }
-        binding.btnPinjam.setOnClickListener{
+
+        // Set up Button click listener
+        binding.btnPinjam.setOnClickListener {
             val jumlah = binding.edtNominal.text.toString()
+
+            // Get ID and perform pinjamDana operation
             preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
-                if (id != null) {
+                id?.let {
                     pinjamViewModel.pinjamDana(id, jumlah)
                 }
             }
 
-            pinjamViewModel.msg.observe(viewLifecycleOwner) {msg ->
-                showToast(msg)
-            }
-        }
-        pinjamViewModel.isError.observe(viewLifecycleOwner) { err ->
-            if (err){
-                pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
-                    Log.e("HomeFragment", "Error: $msg")
-                }
-
-            }else{
-                pinjamViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
-                    if (list != null) {
-                        showRecyclerList(list)
+            // Show toast or update data when done
+            pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
+                Log.d("PinjamFragment", msg)
+                // After action, refresh the list
+                preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
+                    id?.let {
+                        pinjamViewModel.getSimpanPinjam(id, "pinjam")
                     }
                 }
             }
         }
 
+        // Observe for data changes and update RecyclerView
+        pinjamViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
+            list?.let {
+                showRecyclerList(it)
+            }
+        }
+
+        // Observe for error or loading states
+        pinjamViewModel.isError.observe(viewLifecycleOwner) { err ->
+            if (err) {
+                pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
+                    Log.e("PinjamFragment", "Error: $msg")
+                }
+            }
+        }
     }
 
-    private fun showToast(msg: String){
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    // Function to show updated RecyclerView list
+    private fun showRecyclerList(list: List<ListItem>) {
+        pinjamCardAdapter.submitList(list)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    private fun showRecyclerList(list: List<ListItem>){
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val listFormAdapter = PinjamCardAdapter { id ->
-            Log.d("PinjamFragment", "ID yang diklik: $id")
-        }
-        listFormAdapter.submitList(list)
-        binding.recyclerView.adapter = listFormAdapter
-    }
-
 }

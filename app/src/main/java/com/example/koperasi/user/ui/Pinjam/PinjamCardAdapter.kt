@@ -24,7 +24,7 @@ class PinjamCardAdapter(private val onButtonClick: (Int) -> Unit) : ListAdapter<
             binding.txtJumlah.text = formr.jumlah?.let { formatRupiah(it) }
 
             binding.btnBayarPinjaman.setOnClickListener {
-                formr.idanggota?.let { id ->
+                formr.idpinjam?.let { id ->
                     onButtonClick(id)
                 }
             }
