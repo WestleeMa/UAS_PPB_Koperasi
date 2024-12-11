@@ -82,4 +82,28 @@ class PinjamViewModel : ViewModel() {
 
         })
     }
+    fun pelunasan(idpinjam: String){
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().pelunasan(idpinjam)
+        client.enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.isSuccessful){
+                    _isLoading.value = false
+                    _isError.value = false
+                    val responseBody = response.body()
+                    if(responseBody !== null){
+                        _msg.value = "Pelunasan Berhasil"
+                    }
+                }else{
+                    _isError.value = true
+                    _msg.value = (response.errorBody() as ResponseBody).string()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                _msg.value = t.message.toString()
+            }
+
+        })
+    }
 }

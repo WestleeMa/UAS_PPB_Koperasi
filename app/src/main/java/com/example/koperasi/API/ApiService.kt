@@ -51,4 +51,10 @@ interface ApiService {
         @Field("idanggota")idanggota:String,
         @Field("jumlah") jumlah: String
     ):Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("/pelunasan")
+    fun pelunasan(
+        @Field("idpinjam")idpinjam:String,
+    ):Call<ResponseBody>
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,24 +45,40 @@ class PinjamFragment : Fragment() {
         val pref = OperasiPreference.getInstance(requireContext().dataStore)
         val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
         pinjamViewModel = ViewModelProvider(this).get(PinjamViewModel::class.java)
+        val builder = AlertDialog.Builder(requireContext())
 
-        // Initialize adapter
-        pinjamCardAdapter = PinjamCardAdapter { id ->
-            Log.d("PinjamFragment", "ID yang diklik: $id")
-        }
-
-        // Set adapter to RecyclerView
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = pinjamCardAdapter
-
-        // Handle preference ID and get data
         preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
             id?.let {
                 pinjamViewModel.getSimpanPinjam(id, "pinjam")
             }
         }
 
-        // Set up Button click listener
+        pinjamCardAdapter = PinjamCardAdapter { id ->
+            builder.setTitle("Konfirmasi")
+            builder.setMessage("Lunasi Pinjaman?")
+            builder.setPositiveButton("Ya") { dialog, which ->
+                pinjamViewModel.pelunasan(id.toString())
+                pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
+                preferenceViewModel.getID().observe(viewLifecycleOwner) { idanggota ->
+                    idanggota?.let {
+                        pinjamViewModel.getSimpanPinjam(idanggota, "pinjam")
+                    }
+                }
+            }
+            builder.setNegativeButton("Tidak") { dialog, which ->
+                Toast.makeText(context, "Pelunasan dibatalkan", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            Log.d("PinjamFragment", "ID yang diklik: $id")
+            dialog.show()
+        }
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = pinjamCardAdapter
+
         binding.btnPinjam.setOnClickListener {
             val jumlah = binding.edtNominal.text.toString()
 
@@ -72,10 +89,9 @@ class PinjamFragment : Fragment() {
                 }
             }
 
-            // Show toast or update data when done
+
             pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
                 Log.d("PinjamFragment", msg)
-                // After action, refresh the list
                 preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
                     id?.let {
                         pinjamViewModel.getSimpanPinjam(id, "pinjam")
@@ -84,14 +100,12 @@ class PinjamFragment : Fragment() {
             }
         }
 
-        // Observe for data changes and update RecyclerView
         pinjamViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
             list?.let {
                 showRecyclerList(it)
             }
         }
 
-        // Observe for error or loading states
         pinjamViewModel.isError.observe(viewLifecycleOwner) { err ->
             if (err) {
                 pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
@@ -101,7 +115,6 @@ class PinjamFragment : Fragment() {
         }
     }
 
-    // Function to show updated RecyclerView list
     private fun showRecyclerList(list: List<ListItem>) {
         pinjamCardAdapter.submitList(list)
     }
