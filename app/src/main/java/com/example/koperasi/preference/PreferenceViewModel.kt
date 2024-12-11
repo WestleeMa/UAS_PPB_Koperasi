@@ -7,13 +7,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class PreferenceViewModel(private val preferences: OperasiPreference): ViewModel() {
-    fun getID(): LiveData<String> {
+    fun getID(): LiveData<String?> {
         return preferences.getID().asLiveData()
     }
-    fun getNama(): LiveData<String> {
+    fun getNama(): LiveData<String?> {
         return preferences.getNama().asLiveData()
     }
-    fun getRole(): LiveData<String> {
+    fun getRole(): LiveData<String?> {
         return preferences.getRole().asLiveData()
     }
     fun setID(id:String){
@@ -29,6 +29,11 @@ class PreferenceViewModel(private val preferences: OperasiPreference): ViewModel
     fun setRole(role:String){
         viewModelScope.launch {
             preferences.setRole(role)
+        }
+    }
+    fun clearPreferences() {
+        viewModelScope.launch {
+            preferences.clearPreferences()
         }
     }
 }

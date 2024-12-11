@@ -4,6 +4,7 @@ import com.example.koperasi.API.response.ListItem
 import com.example.koperasi.API.response.LoginResponse
 import com.example.koperasi.API.response.SimpanPinjamResponse
 import com.example.koperasi.API.response.WorldResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -24,9 +25,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("/regist")
     fun regist(
+        @Field("nama")nama:String,
         @Field("email")email:String,
         @Field("password")password:String
-    ):Call<LoginResponse>
+    ):Call<ResponseBody>
 
     @FormUrlEncoded
     @POST("/simpanpinjam")
@@ -42,4 +44,11 @@ interface ApiService {
         @Field("kategori")kategori:String,
         @Field("jumlah") jumlah: String? = null
     ):Call<String>
+
+    @FormUrlEncoded
+    @POST("/pinjam")
+    fun pinjaman(
+        @Field("idanggota")idanggota:String,
+        @Field("jumlah") jumlah: String
+    ):Call<ResponseBody>
 }

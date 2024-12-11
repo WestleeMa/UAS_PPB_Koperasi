@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.koperasi.databinding.FragmentSimpanBinding
+import com.example.koperasi.simpansukarela.SetoranSukarelaActivity
 import com.example.koperasi.simpanwajib.SetoranWajibActivity
 
 class SimpanFragment : Fragment() {
@@ -36,8 +37,12 @@ class SimpanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnWajib.setOnClickListener {
             Log.d("SimpanFragment", "Tombol Wajib ditekan")
-            val intentMain = Intent(requireContext(), SetoranWajibActivity::class.java)
-            startActivity(intentMain)
+            val intentWajib = Intent(requireContext(), SetoranWajibActivity::class.java)
+            startActivity(intentWajib)
+        }
+        binding.btnSukarela.setOnClickListener{
+            val intentSukarela = Intent(requireContext(), SetoranSukarelaActivity::class.java)
+            startActivity(intentSukarela)
         }
     }
     override fun onDestroyView() {

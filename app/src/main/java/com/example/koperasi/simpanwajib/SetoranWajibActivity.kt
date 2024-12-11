@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,9 +36,9 @@ class SetoranWajibActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show()
+                Log.d("Notifikasi tersedia", "Notifications permission granted")
             } else {
-                Toast.makeText(this, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+                Log.e("Notifikasi tidak tersedia", "Notifications permission rejected")
             }
         }
 
@@ -60,7 +61,9 @@ class SetoranWajibActivity : AppCompatActivity() {
         val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
         binding.btnSetuju.setOnClickListener {
             preferenceViewModel.getID().observe(this) { id ->
-                setoranWajibViewModel.bayarWajib(id)
+                if (id != null) {
+                    setoranWajibViewModel.bayarWajib(id)
+                }
             }
             sendNotification("Terima Kasih", "Berhasil membayar setoran wajib sebanyak Rp. 25.000,-")
             startActivity(intentMain)

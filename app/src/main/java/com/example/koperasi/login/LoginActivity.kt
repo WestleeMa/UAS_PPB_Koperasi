@@ -37,6 +37,13 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         val pref = OperasiPreference.getInstance(application.dataStore)
         val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
+
+        preferenceViewModel.getID().observe(this){id ->
+            if(id !== null){
+                val intentMain = Intent(this, UserActivity::class.java)
+                startActivity(intentMain)
+            }
+        }
         binding.btnLogin.setOnClickListener{
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()

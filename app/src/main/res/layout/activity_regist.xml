@@ -57,7 +57,7 @@
         />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register"
@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already have an account?"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@id/btnRegist"
         app:layout_constraintLeft_toLeftOf="@id/edtPassword"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"/>
@@ -80,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/linkRegister"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@id/btnRegist"
         android:text="Click here"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"

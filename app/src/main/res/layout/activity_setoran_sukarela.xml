@@ -7,4 +7,49 @@
     android:layout_height="match_parent"
     tools:context=".simpansukarela.SetoranSukarelaActivity">
 
+    <TextView
+        android:id="@+id/title_sukarela"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpanan Sukarela"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/jumlahSukarela"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="minimal Rp.10.000,-"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/title_sukarela"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    <Button
+        android:id="@+id/btnSimpan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/jumlahSukarela"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="65dp"
+        android:text="Simpan"
+        android:layout_marginTop="20dp"
+        />
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/jumlahSukarela"
+        app:layout_constraintStart_toEndOf="@+id/btnSimpan"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Kembali"
+        android:layout_marginTop="20dp"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,12 +22,21 @@ data class ListItem(
 	@field:SerializedName("idsimpan")
 	val idsimpan: Int? = null,
 
+	@field:SerializedName("idpinjam")
+	val idpinjam: Int? = null,
+
 	@field:SerializedName("jumlah")
 	val jumlah: Int? = null,
 
 	@field:SerializedName("tglsetor")
 	val tglsetor: String? = null,
 
+	@field:SerializedName("tglpinjam")
+	val tglpinjam: String? = null,
+
 	@field:SerializedName("kategori")
-	val kategori: String? = null
+	val kategori: String? = null,
+
+	@field:SerializedName("status")
+	val status: String? = null
 )

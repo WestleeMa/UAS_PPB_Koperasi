@@ -1,5 +1,6 @@
 package com.example.koperasi.user.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.koperasi.API.response.ListItem
 import com.example.koperasi.databinding.FragmentHomeBinding
+import com.example.koperasi.login.LoginActivity
 import com.example.koperasi.preference.OperasiPreference
 import com.example.koperasi.preference.PreferenceViewModel
 import com.example.koperasi.preference.ViewModelFactory
@@ -47,9 +49,16 @@ class HomeFragment : Fragment() {
             binding.textHome.text = "Selamat Datang, $it"
         }
 
-        // Observasi ID anggota
+        binding.btnLogout.setOnClickListener{
+            preferenceViewModel.clearPreferences()
+            val intentLogin = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intentLogin)
+        }
+
         preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
-            homeViewModel.getSimpanPinjam(id, "simpan") // Panggil API
+            if (id != null) {
+                homeViewModel.getSimpanPinjam(id, "simpan")
+            }
         }
 
         homeViewModel.isError.observe(viewLifecycleOwner) { err ->
@@ -65,7 +74,6 @@ class HomeFragment : Fragment() {
                 homeViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
                     if (list != null) {
                         showRecyclerList(list)
-                        Log.d("HomeFragment", "Total Item: ${binding.recyclerView.adapter?.itemCount}")
                     }
                 }
             }

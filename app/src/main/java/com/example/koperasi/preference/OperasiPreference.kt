@@ -16,19 +16,19 @@ class OperasiPreference private constructor(private val dataStore: DataStore<Pre
     private val NAMA = stringPreferencesKey("nama")
     private val ROLE = stringPreferencesKey("role")
 
-    fun getID(): Flow<String>{
+    fun getID(): Flow<String?>{
         return dataStore.data.map { preferences->
-            preferences[ID]?:"id"
+            preferences[ID]
         }
     }
-    fun getNama(): Flow<String>{
+    fun getNama(): Flow<String?>{
         return dataStore.data.map { preferences->
-            preferences[NAMA]?:"nama"
+            preferences[NAMA]
         }
     }
-    fun getRole(): Flow<String>{
+    fun getRole(): Flow<String?>{
         return dataStore.data.map { preferences->
-            preferences[ROLE]?:"role"
+            preferences[ROLE]
         }
     }
 
@@ -45,6 +45,12 @@ class OperasiPreference private constructor(private val dataStore: DataStore<Pre
     suspend fun setRole(role:String){
         dataStore.edit { preferences->
             preferences[ROLE] = role
+        }
+    }
+
+    suspend fun clearPreferences() {
+        dataStore.edit { preferences ->
+            preferences.clear()
         }
     }
     companion object{
