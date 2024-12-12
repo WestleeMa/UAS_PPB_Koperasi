@@ -31,7 +31,7 @@ class RegistViewModel : ViewModel() {
                         _isError.value = false
                         val responseBody = response.body()
                         if(responseBody !== null){
-                            _msg.value = "Berhasil mendaftar, silahkan Login"
+                            _msg.value = "Berhasil mendaftar"
                         }
                     }else{
                         if(_isError.value == null){

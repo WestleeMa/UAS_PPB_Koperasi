@@ -1,5 +1,6 @@
-package com.example.koperasi.user.ui.home
+package com.example.koperasi.admin.ui.simpanan
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,9 +12,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeViewModel : ViewModel() {
+class SimpananViewModel : ViewModel() {
     private val _listSimpanPinjam = MutableLiveData<List<ListItem>?>()
     val listSimpanPinjam: MutableLiveData<List<ListItem>?> = _listSimpanPinjam
+
     private val _msg = MutableLiveData<String>()
     val msg : MutableLiveData<String> = _msg
 
@@ -26,9 +28,9 @@ class HomeViewModel : ViewModel() {
     private val _simpanan = MutableLiveData<String>()
     val simpanan : MutableLiveData<String> = _simpanan
 
-    fun getSimpanPinjam(idanggota:String, tbl:String) {
+    fun getSimpanPinjam() {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getSimpanPinjam(idanggota, tbl)
+        val client = ApiConfig.getApiService().getSimpanPinjam(null, "simpan")
         client.enqueue(object : Callback<SimpanPinjamResponse> {
             override fun onResponse(
                 call: Call<SimpanPinjamResponse>,
@@ -56,9 +58,38 @@ class HomeViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<SimpanPinjamResponse>, t: Throwable) {
+                Log.e("Error Simpan Pinjam View Model", t.toString())
+                _isError.value = true
                 _msg.value = t.message.toString()
             }
 
+        })
+    }
+    fun deleteSimpanan(idsimpan: Int?, tabel: String){
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().deleteSimpanPinjam(idsimpan, tabel)
+        client.enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.isSuccessful) {
+                    _isLoading.value = false
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        msg.value = "Berhasil menghapus data simpanan"
+                    }
+                }else{
+                    if(_isError.value == null){
+                        _isError.value = true
+                    }
+                    _msg.value = (response.errorBody() as ResponseBody).string()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("Error Delete Simpanan View Model", t.toString())
+                _isLoading.value = false
+                _isError.value = true
+                _msg.value = t.message
+            }
         })
     }
 }

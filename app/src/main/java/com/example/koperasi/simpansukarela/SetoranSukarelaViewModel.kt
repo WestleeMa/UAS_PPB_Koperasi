@@ -19,16 +19,29 @@ class SetoranSukarelaViewModel: ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : MutableLiveData<Boolean> = _isLoading
 
-    fun bayarSukarela(idanggota: String, jumlah: String){
+    private val _jumlahakhir = MutableLiveData<Int>()
+    val jumlahakhir : MutableLiveData<Int> = _jumlahakhir
+
+    fun bayarSukarela(idanggota: String, jumlah: Int){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().simpanan(idanggota, "Sukarela", jumlah)
+        if(jumlah < 10000){
+            _isError.value = true
+            _msg.value = "Jumlah minimal Rp.10.000,-"
+        }else{
+            _isError.value = false
+            _jumlahakhir.value = jumlah
+        }
+        val client = ApiConfig.getApiService().simpanan(idanggota, "Sukarela", jumlahakhir.value)
         client.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if(response.isSuccessful) {
+                    Log.d("SetoranWajibViewModel", "berhasil")
+                    _isError.value = false
                     _isLoading.value = false
                     val responseBody = response.body()
                     if (responseBody != null) {
                         Log.d("SetoranWajibViewModel", responseBody)
+                        _msg.value = "Berhasil"
                     }
                 }else{
                     if(_isError.value == null){

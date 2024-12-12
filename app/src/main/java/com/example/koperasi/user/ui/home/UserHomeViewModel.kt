@@ -1,6 +1,5 @@
-package com.example.koperasi.user.ui.Pinjam
+package com.example.koperasi.user.ui.home
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.koperasi.API.ApiConfig
@@ -11,9 +10,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PinjamViewModel : ViewModel() {
+class UserHomeViewModel : ViewModel() {
     private val _listSimpanPinjam = MutableLiveData<List<ListItem>?>()
     val listSimpanPinjam: MutableLiveData<List<ListItem>?> = _listSimpanPinjam
+
     private val _msg = MutableLiveData<String>()
     val msg : MutableLiveData<String> = _msg
 
@@ -22,6 +22,9 @@ class PinjamViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : MutableLiveData<Boolean> = _isLoading
+
+    private val _simpanan = MutableLiveData<String>()
+    val simpanan : MutableLiveData<String> = _simpanan
 
     fun getSimpanPinjam(idanggota:String, tbl:String) {
         _isLoading.value = true
@@ -35,6 +38,7 @@ class PinjamViewModel : ViewModel() {
                     _isLoading.value = false
                     val responseBody = response.body()
                     if(responseBody != null){
+                        _simpanan.value = responseBody.total.toString()
                         _listSimpanPinjam.value = responseBody.list as List<ListItem>?
                         _isError.value = false
                     }else{
@@ -52,55 +56,6 @@ class PinjamViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<SimpanPinjamResponse>, t: Throwable) {
-                _msg.value = t.message.toString()
-            }
-
-        })
-    }
-
-    fun pinjamDana(idanggota: String, jumlah: String){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().pinjaman(idanggota, jumlah)
-        client.enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.isSuccessful){
-                    _isLoading.value = false
-                    _isError.value = false
-                    val responseBody = response.body()
-                    if(responseBody !== null){
-                        _msg.value = "Pinjaman berhasil"
-                    }
-                }else{
-                    _isError.value = true
-                    _msg.value = (response.errorBody() as ResponseBody).string()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                _msg.value = t.message.toString()
-            }
-
-        })
-    }
-    fun pelunasan(idpinjam: String){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().pelunasan(idpinjam)
-        client.enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.isSuccessful){
-                    _isLoading.value = false
-                    _isError.value = false
-                    val responseBody = response.body()
-                    if(responseBody !== null){
-                        _msg.value = "Pelunasan Berhasil"
-                    }
-                }else{
-                    _isError.value = true
-                    _msg.value = (response.errorBody() as ResponseBody).string()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 _msg.value = t.message.toString()
             }
 

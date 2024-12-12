@@ -1,19 +1,21 @@
-package com.example.koperasi.user.ui.Pinjam
+package com.example.koperasi.admin.ui.anggota
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.koperasi.API.ApiConfig
-import com.example.koperasi.API.response.ListItem
-import com.example.koperasi.API.response.SimpanPinjamResponse
+import com.example.koperasi.API.response.AnggotaResponseItem
+import com.example.koperasi.API.response.AnggotaResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PinjamViewModel : ViewModel() {
-    private val _listSimpanPinjam = MutableLiveData<List<ListItem>?>()
-    val listSimpanPinjam: MutableLiveData<List<ListItem>?> = _listSimpanPinjam
+class AnggotaViewModel : ViewModel() {
+    private val _listAnggota = MutableLiveData<List<AnggotaResponseItem>?>()
+    val listAnggota: MutableLiveData<List<AnggotaResponseItem>?> = _listAnggota
+
     private val _msg = MutableLiveData<String>()
     val msg : MutableLiveData<String> = _msg
 
@@ -23,19 +25,22 @@ class PinjamViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : MutableLiveData<Boolean> = _isLoading
 
-    fun getSimpanPinjam(idanggota:String, tbl:String) {
+    private val _simpanan = MutableLiveData<String>()
+    val simpanan : MutableLiveData<String> = _simpanan
+
+    fun getAnggota() {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getSimpanPinjam(idanggota, tbl)
-        client.enqueue(object : Callback<SimpanPinjamResponse> {
+        val client = ApiConfig.getApiService().anggota()
+        client.enqueue(object : Callback<List<AnggotaResponseItem>> {
             override fun onResponse(
-                call: Call<SimpanPinjamResponse>,
-                response: Response<SimpanPinjamResponse>
+                call: Call<List<AnggotaResponseItem>>,
+                response: Response<List<AnggotaResponseItem>>
             ) {
                 if(response.isSuccessful){
                     _isLoading.value = false
                     val responseBody = response.body()
                     if(responseBody != null){
-                        _listSimpanPinjam.value = responseBody.list as List<ListItem>?
+                        _listAnggota.value = responseBody
                         _isError.value = false
                     }else{
                         if(_isError.value == null){
@@ -51,59 +56,67 @@ class PinjamViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<SimpanPinjamResponse>, t: Throwable) {
+            override fun onFailure(call: Call<List<AnggotaResponseItem>>, t: Throwable) {
+                Log.d("gagal", t.toString())
                 _msg.value = t.message.toString()
             }
 
         })
     }
 
-    fun pinjamDana(idanggota: String, jumlah: String){
+    fun editAnggota(idanggota: Int, nama: String, simpanan: Int, role: String, email: String, password: String){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().pinjaman(idanggota, jumlah)
-        client.enqueue(object: Callback<ResponseBody>{
+        val client = ApiConfig.getApiService().editUser(idanggota, nama, simpanan, role, email, password )
+        client.enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.isSuccessful){
+                if(response.isSuccessful) {
                     _isLoading.value = false
-                    _isError.value = false
                     val responseBody = response.body()
-                    if(responseBody !== null){
-                        _msg.value = "Pinjaman berhasil"
+                    if (responseBody != null) {
+                        msg.value = "Berhasil mengubah data anggota"
                     }
                 }else{
-                    _isError.value = true
+                    if(_isError.value == null){
+                        _isError.value = true
+                    }
                     _msg.value = (response.errorBody() as ResponseBody).string()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                _msg.value = t.message.toString()
+                Log.e("Error Anggota View Model", t.toString())
+                _isLoading.value = false
+                _isError.value = true
+                _msg.value = t.message
             }
-
         })
     }
-    fun pelunasan(idpinjam: String){
+
+    fun deleteAnggota(idanggota: Int){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().pelunasan(idpinjam)
-        client.enqueue(object: Callback<ResponseBody>{
+        val client = ApiConfig.getApiService().deleteUser(idanggota)
+        client.enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.isSuccessful){
+                if(response.isSuccessful) {
                     _isLoading.value = false
-                    _isError.value = false
                     val responseBody = response.body()
-                    if(responseBody !== null){
-                        _msg.value = "Pelunasan Berhasil"
+                    if (responseBody != null) {
+                        msg.value = "Berhasil menghapus anggota"
                     }
                 }else{
-                    _isError.value = true
+                    if(_isError.value == null){
+                        _isError.value = true
+                    }
                     _msg.value = (response.errorBody() as ResponseBody).string()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                _msg.value = t.message.toString()
+                Log.e("Error Anggota View Model", t.toString())
+                _isLoading.value = false
+                _isError.value = true
+                _msg.value = t.message
             }
-
         })
     }
 }

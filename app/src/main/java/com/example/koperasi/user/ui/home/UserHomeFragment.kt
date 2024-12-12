@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.koperasi.API.response.ListItem
-import com.example.koperasi.databinding.FragmentHomeBinding
+import com.example.koperasi.admin.AdminActivity
+import com.example.koperasi.databinding.FragmentUserhomeBinding
 import com.example.koperasi.login.LoginActivity
 import com.example.koperasi.preference.OperasiPreference
 import com.example.koperasi.preference.PreferenceViewModel
@@ -20,11 +21,11 @@ import com.example.koperasi.preference.dataStore
 import java.text.NumberFormat
 import java.util.Locale
 
-class HomeFragment : Fragment() {
+class UserHomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentUserhomeBinding? = null
     private lateinit var recyclerView: RecyclerView
-    private lateinit var cardAdapter: HomeCardAdapter
+    private lateinit var cardAdapter: UserHomeCardAdapter
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -32,15 +33,15 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentUserhomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val userHomeViewModel =
+            ViewModelProvider(this).get(UserHomeViewModel::class.java)
 
         val pref = OperasiPreference.getInstance(requireContext().dataStore)
         val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
@@ -49,6 +50,17 @@ class HomeFragment : Fragment() {
             binding.textHome.text = "Selamat Datang, $it"
         }
 
+        preferenceViewModel.getRole().observe(viewLifecycleOwner) {
+            if (it == "pengurus") {
+                binding.btnPageAdmin.visibility = View.VISIBLE
+            }else {
+                binding.btnPageAdmin.visibility = View.GONE
+            }
+        }
+        binding.btnPageAdmin.setOnClickListener{
+            val intentAdmin = Intent(requireContext(), AdminActivity::class.java)
+            startActivity(intentAdmin)
+        }
         binding.btnLogout.setOnClickListener{
             preferenceViewModel.clearPreferences()
             val intentLogin = Intent(requireContext(), LoginActivity::class.java)
@@ -57,21 +69,21 @@ class HomeFragment : Fragment() {
 
         preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
             if (id != null) {
-                homeViewModel.getSimpanPinjam(id, "simpan")
+                userHomeViewModel.getSimpanPinjam(id, "simpan")
             }
         }
 
-        homeViewModel.isError.observe(viewLifecycleOwner) { err ->
+        userHomeViewModel.isError.observe(viewLifecycleOwner) { err ->
             if (err){
-                homeViewModel.msg.observe(viewLifecycleOwner) { msg ->
-                    Log.e("HomeFragment", "Error: $msg")
+                userHomeViewModel.msg.observe(viewLifecycleOwner) { msg ->
+                    Log.e("UserHomeFragment", "Error: $msg")
                 }
 
             }else{
-                homeViewModel.simpanan.observe(viewLifecycleOwner) { simpanan ->
+                userHomeViewModel.simpanan.observe(viewLifecycleOwner) { simpanan ->
                     binding.textSimpanan.text = formatRupiah(simpanan.toInt())
                 }
-                homeViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
+                userHomeViewModel.listSimpanPinjam.observe(viewLifecycleOwner) { list ->
                     if (list != null) {
                         showRecyclerList(list)
                     }
@@ -88,7 +100,7 @@ class HomeFragment : Fragment() {
     }
     private fun showRecyclerList(list: List<ListItem>){
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val listFomUserAdapter = HomeCardAdapter()
+        val listFomUserAdapter = UserHomeCardAdapter()
         listFomUserAdapter.submitList(list)
         binding.recyclerView.adapter =listFomUserAdapter
     }

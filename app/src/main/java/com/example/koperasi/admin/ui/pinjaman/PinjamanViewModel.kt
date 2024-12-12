@@ -1,5 +1,6 @@
-package com.example.koperasi.user.ui.Pinjam
+package com.example.koperasi.admin.ui.pinjaman
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,9 +12,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PinjamViewModel : ViewModel() {
+class PinjamanViewModel : ViewModel() {
     private val _listSimpanPinjam = MutableLiveData<List<ListItem>?>()
     val listSimpanPinjam: MutableLiveData<List<ListItem>?> = _listSimpanPinjam
+
     private val _msg = MutableLiveData<String>()
     val msg : MutableLiveData<String> = _msg
 
@@ -23,9 +25,12 @@ class PinjamViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : MutableLiveData<Boolean> = _isLoading
 
-    fun getSimpanPinjam(idanggota:String, tbl:String) {
+    private val _pinjaman = MutableLiveData<String>()
+    val pinjaman : MutableLiveData<String> = _pinjaman
+
+    fun getSimpanPinjam() {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getSimpanPinjam(idanggota, tbl)
+        val client = ApiConfig.getApiService().getSimpanPinjam(null, "pinjam")
         client.enqueue(object : Callback<SimpanPinjamResponse> {
             override fun onResponse(
                 call: Call<SimpanPinjamResponse>,
@@ -35,6 +40,7 @@ class PinjamViewModel : ViewModel() {
                     _isLoading.value = false
                     val responseBody = response.body()
                     if(responseBody != null){
+                        _pinjaman.value = responseBody.total.toString()
                         _listSimpanPinjam.value = responseBody.list as List<ListItem>?
                         _isError.value = false
                     }else{
@@ -57,29 +63,31 @@ class PinjamViewModel : ViewModel() {
 
         })
     }
-
-    fun pinjamDana(idanggota: String, jumlah: String){
+    fun deletePinjaman(idpinjam: Int?, tabel: String){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().pinjaman(idanggota, jumlah)
-        client.enqueue(object: Callback<ResponseBody>{
+        val client = ApiConfig.getApiService().deleteSimpanPinjam(idpinjam, tabel)
+        client.enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.isSuccessful){
+                if(response.isSuccessful) {
                     _isLoading.value = false
-                    _isError.value = false
                     val responseBody = response.body()
-                    if(responseBody !== null){
-                        _msg.value = "Pinjaman berhasil"
+                    if (responseBody != null) {
+                        msg.value = "Berhasil menghapus data Pinjaman"
                     }
                 }else{
-                    _isError.value = true
+                    if(_isError.value == null){
+                        _isError.value = true
+                    }
                     _msg.value = (response.errorBody() as ResponseBody).string()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                _msg.value = t.message.toString()
+                Log.e("Error Delete Pinjaman View Model", t.toString())
+                _isLoading.value = false
+                _isError.value = true
+                _msg.value = t.message
             }
-
         })
     }
     fun pelunasan(idpinjam: String){

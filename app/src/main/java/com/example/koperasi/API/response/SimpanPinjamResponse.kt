@@ -38,5 +38,8 @@ data class ListItem(
 	val kategori: String? = null,
 
 	@field:SerializedName("status")
-	val status: String? = null
+	val status: String? = null,
+
+	@field:SerializedName("nama")
+	val nama: String? = null,
 )

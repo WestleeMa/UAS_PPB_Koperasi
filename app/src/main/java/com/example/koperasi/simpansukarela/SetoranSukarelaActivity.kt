@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -70,11 +71,19 @@ class SetoranSukarelaActivity : AppCompatActivity() {
         binding.btnSimpan.setOnClickListener {
             preferenceViewModel.getID().observe(this) { id ->
                 if (id != null) {
-                    setoranSukarelaViewModel.bayarSukarela(id, binding.jumlahSukarela.text.toString())
+                    setoranSukarelaViewModel.bayarSukarela(id, parseInt(binding.jumlahSukarela.text.toString()))
+                    setoranSukarelaViewModel.isError.observe(this){err ->
+                        if(err == true && setoranSukarelaViewModel.msg.value != null && setoranSukarelaViewModel.msg.value != "timeout"){
+                            Log.d("Setoran Sukarela", err.toString())
+                            sendNotification("Gagal", setoranSukarelaViewModel.msg.value.toString())
+                        }else{
+                            Log.d("Setoran Sukarela", "berhasil")
+                            sendNotification("Terima Kasih", "Berhasil membayar setoran sukarela sebanyak ${formatRupiah(parseInt(binding.jumlahSukarela.text.toString()))}")
+                            startActivity(intentMain)
+                        }
+                    }
                 }
             }
-            sendNotification("Terima Kasih", "Berhasil membayar setoran sukarela sebanyak ${formatRupiah(parseInt(binding.jumlahSukarela.text.toString()))}")
-            startActivity(intentMain)
         }
         binding.btnCancel.setOnClickListener{
             startActivity(intentMain)
@@ -87,13 +96,13 @@ class SetoranSukarelaActivity : AppCompatActivity() {
             .setContentTitle(title)
             .setSmallIcon(R.drawable.baseline_notifications_active_24)
             .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSubText(getString(R.string.notification_subtext))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             )
             builder.setChannelId(CHANNEL_ID)
             notificationManager.createNotificationChannel(channel)

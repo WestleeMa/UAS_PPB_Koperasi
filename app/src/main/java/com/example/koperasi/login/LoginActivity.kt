@@ -2,6 +2,7 @@ package com.example.koperasi.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.koperasi.R
+import com.example.koperasi.admin.AdminActivity
 import com.example.koperasi.register.RegistActivity
 import com.example.koperasi.databinding.ActivityLoginBinding
 import com.example.koperasi.preference.OperasiPreference
@@ -38,12 +40,6 @@ class LoginActivity : AppCompatActivity() {
         val pref = OperasiPreference.getInstance(application.dataStore)
         val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
 
-        preferenceViewModel.getID().observe(this){id ->
-            if(id !== null){
-                val intentMain = Intent(this, UserActivity::class.java)
-                startActivity(intentMain)
-            }
-        }
         binding.btnLogin.setOnClickListener{
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
@@ -64,17 +60,33 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.role.observe(this){role->
                     if (role != null) {
                         preferenceViewModel.setRole(role)
+                        if(role == "pengurus"){
+                            val intentAdmin = Intent(this, AdminActivity::class.java)
+                            startActivity(intentAdmin)
+                        }else if(role == "anggota"){
+                            val intentUser = Intent(this, UserActivity::class.java)
+                            startActivity(intentUser)
+                        }
                     }
                 }
-                val intentMain = Intent(this, UserActivity::class.java)
-                startActivity(intentMain)
             }else{
                 loginViewModel.msg.observe(this){msg->
                     showToast(msg)
                 }
             }
         }
-
+        preferenceViewModel.getRole().observe(this){role ->
+            Log.d("dataStore", role.toString())
+            if(role !== null){
+                if(role == "pengurus"){
+                    val intentAdmin = Intent(this, AdminActivity::class.java)
+                    startActivity(intentAdmin)
+                }else if(role == "anggota"){
+                    val intentUser = Intent(this, UserActivity::class.java)
+                    startActivity(intentUser)
+                }
+            }
+        }
     }
 
     private fun showToast(msg: String){

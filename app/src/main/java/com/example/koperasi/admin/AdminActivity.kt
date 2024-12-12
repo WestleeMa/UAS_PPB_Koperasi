@@ -1,4 +1,4 @@
-package com.example.koperasi.user
+package com.example.koperasi.admin
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,44 +10,33 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.koperasi.R
-import com.example.koperasi.databinding.ActivityUserBinding
+import com.example.koperasi.databinding.ActivityAdminBinding
 import com.example.koperasi.login.LoginActivity
 import com.example.koperasi.preference.OperasiPreference
 import com.example.koperasi.preference.PreferenceViewModel
 import com.example.koperasi.preference.ViewModelFactory
 import com.example.koperasi.preference.dataStore
+import com.example.koperasi.user.UserActivity
 
-class UserActivity : AppCompatActivity() {
+class AdminActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityUserBinding
+    private lateinit var binding: ActivityAdminBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityUserBinding.inflate(layoutInflater)
+        binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_user)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        val pref = OperasiPreference.getInstance(application.dataStore)
+        val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
+        val navController = findNavController(R.id.nav_host_fragment_activity_admin)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_simpan, R.id.navigation_pinjam
+                R.id.navigation_anggota, R.id.navigation_simpanan, R.id.navigation_pinjaman
             )
         )
         navView.setupWithNavController(navController)
-
-        val pref = OperasiPreference.getInstance(application.dataStore)
-        val preferenceViewModel = ViewModelProvider(this, ViewModelFactory(pref))[PreferenceViewModel::class.java]
-
-        preferenceViewModel.getID().observe(this){id ->
-            Log.d("id", id.toString())
-            if(id == null){
-                val intentMain = Intent(this, LoginActivity::class.java)
-                startActivity(intentMain)
-            }
-        }
     }
 }

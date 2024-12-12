@@ -4,50 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".user.ui.home.HomeFragment">
+    tools:context=".admin.ui.pinjaman.PinjamanFragment">
 
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Log Out"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="50dp"
-        />
     <TextView
-        android:id="@+id/text_home"
+        android:id="@+id/text_ket_pinjam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="100dp"
-        android:textStyle="bold"
-        android:text="dummy"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-    <TextView
-        android:id="@+id/text_ket_simpan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="50dp"
-        android:text="Total Simpanan Anda"
+        android:text="Total Pinjaman Koperasi"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/text_home"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         />
     <TextView
-        android:id="@+id/text_simpanan"
+        android:id="@+id/text_pinjaman"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
         android:textStyle="bold"
         android:text="Rp. 10.000.000,-"
         android:textSize="28sp"
-        app:layout_constraintTop_toBottomOf="@+id/text_ket_simpan"
+        app:layout_constraintTop_toBottomOf="@+id/text_ket_pinjam"
         app:layout_constraintLeft_toLeftOf="parent"
         />
     <TextView
@@ -56,9 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="50dp"
-        android:text="Riwayat simpanan"
+        android:text="Seluruh riwayat pinjaman"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/text_simpanan"
+        app:layout_constraintTop_toBottomOf="@+id/text_pinjaman"
         app:layout_constraintLeft_toLeftOf="parent"
         />
     <androidx.recyclerview.widget.RecyclerView

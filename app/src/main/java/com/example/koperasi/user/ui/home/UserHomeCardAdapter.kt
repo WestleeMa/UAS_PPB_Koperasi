@@ -1,23 +1,16 @@
 package com.example.koperasi.user.ui.home
 
-import android.content.Intent
-import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.koperasi.API.response.ListItem
-import com.example.koperasi.R
 import com.example.koperasi.databinding.ItemCardBinding
 import java.text.NumberFormat
-import java.time.ZonedDateTime
 import java.util.Locale
 
-class HomeCardAdapter : ListAdapter<ListItem, HomeCardAdapter.ListViewHolder>(DIFF_CALLBACK) {
+class UserHomeCardAdapter : ListAdapter<ListItem, UserHomeCardAdapter.ListViewHolder>(DIFF_CALLBACK) {
     class ListViewHolder(val binding: ItemCardBinding):RecyclerView.ViewHolder(binding.root){
         fun formatRupiah(number: Int): String {
             val localeID = Locale("in", "ID") // Locale untuk Indonesia
@@ -35,7 +28,7 @@ class HomeCardAdapter : ListAdapter<ListItem, HomeCardAdapter.ListViewHolder>(DI
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding = ItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HomeCardAdapter.ListViewHolder(binding)
+        return UserHomeCardAdapter.ListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {

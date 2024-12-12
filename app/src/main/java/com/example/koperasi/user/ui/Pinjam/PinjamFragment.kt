@@ -82,10 +82,13 @@ class PinjamFragment : Fragment() {
         binding.btnPinjam.setOnClickListener {
             val jumlah = binding.edtNominal.text.toString()
 
-            // Get ID and perform pinjamDana operation
+
             preferenceViewModel.getID().observe(viewLifecycleOwner) { id ->
                 id?.let {
                     pinjamViewModel.pinjamDana(id, jumlah)
+                    pinjamViewModel.msg.observe(viewLifecycleOwner) { msg ->
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 

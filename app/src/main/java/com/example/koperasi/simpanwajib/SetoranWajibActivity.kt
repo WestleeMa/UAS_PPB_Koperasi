@@ -79,13 +79,13 @@ class SetoranWajibActivity : AppCompatActivity() {
             .setContentTitle(title)
             .setSmallIcon(R.drawable.baseline_notifications_active_24)
             .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSubText(getString(R.string.notification_subtext))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             )
             builder.setChannelId(CHANNEL_ID)
             notificationManager.createNotificationChannel(channel)
